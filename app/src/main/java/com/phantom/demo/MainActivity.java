@@ -486,7 +486,7 @@ public class MainActivity extends Activity {
 
             int start = i;
             while (i < lower.length() &&
-                    (Character.isLetterOrDigit(lower.charAt(i)) || lower.charAt(i) == ''')) i++;
+                    (Character.isLetterOrDigit(lower.charAt(i)) || lower.charAt(i) == 39)) i++;
             int end = i;
 
             String rawWord = normalize(lower.substring(start, end));
@@ -533,7 +533,7 @@ public class MainActivity extends Activity {
         if (source == null) return "";
 
         return source.toLowerCase(Locale.UK)
-                .replace('’', ''')
+                .replace("’", "'")
                 .replaceAll("[^a-z0-9' ]", " ")
                 .replaceAll("\\s+", " ")
                 .trim();
