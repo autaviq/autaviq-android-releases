@@ -10,7 +10,7 @@ android {
         applicationId 'com.phantom.readingprototype.v021'
         minSdk 26
         targetSdk 35
-        versionCode 4
-        versionName '0.2.2-reading'
+        versionCode 5
+        versionName '0.3.0-design'
     }
 }
