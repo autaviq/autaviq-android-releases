@@ -12,11 +12,12 @@
 
     <application
         android:allowBackup="false"
-        android:label="Phantom Reading Prototype"
+        android:label="Project Phantom"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".LauncherActivity"
             android:screenOrientation="unspecified"
             android:exported="true">
             <intent-filter>
@@ -24,5 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="unspecified"
+            android:exported="false" />
     </application>
 </manifest>
