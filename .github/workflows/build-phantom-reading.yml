@@ -1,7 +1,7 @@
 name: Build Phantom Reading Prototype
 on:
   push:
-    branches: [phantom-reading-0.2.2]
+    branches: [phantom-reading-0.3-design]
   workflow_dispatch:
 
 jobs:
@@ -19,6 +19,6 @@ jobs:
       - run: gradle :app:assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: phantom-reading-prototype-0.2.2-apk
+          name: phantom-reading-prototype-0.3-design-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
