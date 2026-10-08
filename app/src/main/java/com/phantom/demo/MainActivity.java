@@ -454,12 +454,14 @@ public class MainActivity extends Activity {
                 "% · order " + Math.round(order * 100) +
                 "% · " + percent + "%");
 
-        int minimumHeard = Math.min(3, expected.size());
+        int minimumHeard = expected.size() <= 3 ? 2 : Math.min(3, expected.size());
         boolean enoughWords = actual.size() >= minimumHeard;
+
+        float shortSentenceThreshold = expected.size() <= 3 ? 0.66f : 0.72f;
 
         boolean complete =
                 enoughWords &&
-                        ((coverage >= 0.72f && order >= 0.50f) ||
+                        ((coverage >= shortSentenceThreshold && order >= 0.50f) ||
                                 coverage >= 0.86f ||
                                 order >= 0.82f);
 
@@ -665,6 +667,7 @@ public class MainActivity extends Activity {
     private void completePassage() {
         if (passageComplete) return;
 
+        ensureFinalStoryState();
         passageComplete = true;
         progressBar.setProgress(100);
         hintText.setText("✓ COMPLETE");
@@ -686,16 +689,39 @@ public class MainActivity extends Activity {
             } catch (Exception ignored) {}
         }
 
-        handler.postDelayed(() -> {
-            showPassage(passage + 1, "Auto advance");
+        handler.postDelayed(() -> showPassage(passage + 1, "Auto advance"), 1450);
+    }
 
-            if (wantsListening) {
-                transitioning = false;
-                startSession();
-            } else {
-                transitioning = false;
-            }
-        }, 1450);
+    private void ensureFinalStoryState() {
+        switch (passage) {
+            case 0:
+                fireOnce(WAKE);
+                break;
+            case 1:
+                fireOnce(WINGS);
+                fireOnce(OUTSIDE);
+                break;
+            case 2:
+                fireOnce(BUTTERFLY);
+                break;
+            case 3:
+                fireOnce(FOLLOW);
+                break;
+            case 4:
+                fireOnce(STREAM);
+                break;
+            case 5:
+                fireOnce(DRINK);
+                fireOnce(SPLASH);
+                break;
+            case 6:
+                fireOnce(LOOK_HOME);
+                break;
+            case 7:
+                fireOnce(FLAP);
+                fireOnce(FLY_HOME);
+                break;
+        }
     }
 
     private void showPassage(int requested, String reason) {
