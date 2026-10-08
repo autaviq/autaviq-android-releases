@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.speech.RecognitionListener;
@@ -69,6 +70,7 @@ public class MainActivity extends Activity {
 
     private SpeechRecognizer recognizer;
     private Intent recognizerIntent;
+    private PowerManager.WakeLock screenWakeLock;
     private boolean wantsListening = false;
     private boolean restartScheduled = false;
     private boolean transitioning = false;
@@ -100,6 +102,15 @@ public class MainActivity extends Activity {
         // this Activity is visible; Android releases the flag automatically
         // when the app is backgrounded or closed.
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        if (powerManager != null) {
+            screenWakeLock = powerManager.newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE,
+                    "PhantomReading:ForegroundScreen");
+            screenWakeLock.setReferenceCounted(false);
+        }
+
         buildUi();
         setupSpeech();
         showPassage(0, "Story ready");
@@ -133,6 +144,7 @@ public class MainActivity extends Activity {
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(dp(14), dp(10), dp(14), dp(12));
         root.setBackgroundColor(Color.rgb(5, 12, 24));
+        root.setKeepScreenOn(true);
 
         LinearLayout top = new LinearLayout(this);
         top.setOrientation(LinearLayout.HORIZONTAL);
@@ -142,7 +154,7 @@ public class MainActivity extends Activity {
         brandBox.setOrientation(LinearLayout.VERTICAL);
 
         TextView title = makeText("Phantom Reading Lab", 19, Color.WHITE, true);
-        TextView version = makeText("Child reading prototype · 0.2.1", 11, Color.rgb(145, 164, 191), false);
+        TextView version = makeText("Child reading prototype · 0.2.2", 11, Color.rgb(145, 164, 191), false);
         brandBox.addView(title);
         brandBox.addView(version);
 
@@ -805,6 +817,27 @@ public class MainActivity extends Activity {
                         "\nCommitted: " + (committed.isEmpty() ? "—" : committed) +
                         "\nLast: " + last
         );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (screenWakeLock != null && !screenWakeLock.isHeld()) {
+            try {
+                screenWakeLock.acquire();
+            } catch (Exception ignored) {}
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (screenWakeLock != null && screenWakeLock.isHeld()) {
+            try {
+                screenWakeLock.release();
+            } catch (Exception ignored) {}
+        }
+        super.onPause();
     }
 
     @Override
