@@ -11,7 +11,7 @@
 
     <application
         android:allowBackup="false"
-        android:label="Phantom Voice Demo"
+        android:label="Phantom Reading Prototype"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false">
         <activity
