@@ -25,6 +25,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -95,6 +96,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         getWindow().setStatusBarColor(Color.rgb(5, 12, 24));
         getWindow().setNavigationBarColor(Color.rgb(5, 12, 24));
+        // Reading is an eyes-on-screen activity. Keep the display awake while
+        // this Activity is visible; Android releases the flag automatically
+        // when the app is backgrounded or closed.
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         buildUi();
         setupSpeech();
         showPassage(0, "Story ready");
@@ -137,7 +142,7 @@ public class MainActivity extends Activity {
         brandBox.setOrientation(LinearLayout.VERTICAL);
 
         TextView title = makeText("Phantom Reading Lab", 19, Color.WHITE, true);
-        TextView version = makeText("Child reading prototype · 0.2", 11, Color.rgb(145, 164, 191), false);
+        TextView version = makeText("Child reading prototype · 0.2.1", 11, Color.rgb(145, 164, 191), false);
         brandBox.addView(title);
         brandBox.addView(version);
 
